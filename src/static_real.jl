@@ -39,7 +39,9 @@ Base.eltype(x::StaticReal{X}) where X = StaticReal{X}
 
 Base.Float64(x::StaticReal) = known(x)
 
-Base.promote_rule(::Type{<:StaticReal}, ::Type{T}) where {T<:Number} = float(T)
+const RealSubType = Union{AbstractFloat, AbstractIrrational, Integer, Rational}
+
+Base.promote_rule(::Type{<:StaticReal}, ::Type{T}) where {T<:RealSubType} = float(T)
 
 Base.convert(::Type{StaticReal{X}}, ::StaticReal{X}) where X = StaticReal{X}()
 Base.convert(T::Type{StaticReal{X}}, y::StaticReal{Y}) where {X,Y} = throw(InexactError(Symbol(T), T, y))
@@ -58,8 +60,6 @@ Base.one(::StaticReal) = StaticReal{1.0}()
 @inline Base.iszero(@nospecialize x::StaticReal) = false
 @inline Base.isone(::StaticRealOne) = true
 @inline Base.isone(@nospecialize x::StaticReal) = false
-
-const RealSubType = Union{AbstractFloat, AbstractIrrational, Integer, Rational}
 
 @inline Base.:(+)(x::StaticReal) = x
 @inline Base.:(-)(::StaticReal{X}) where X = staticreal(-X)
