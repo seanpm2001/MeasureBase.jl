@@ -17,7 +17,10 @@ end
 
 const StaticRealZero = StaticReal{0.0}
 const StaticRealOne = StaticReal{1.0}
+const StaticRealPosInf = StaticReal{+Inf}
+const StaticRealNegInf = StaticReal{-Inf}
 
+const StaticRealInfinity = Union{StaticRealPosInf,StaticRealNegInf}
 
 @inline staticreal(x::Float64) = StaticReal{x}()
 @inline staticreal(x::Real) = StaticReal{Float64(x)}()
@@ -36,7 +39,7 @@ Base.eltype(x::StaticReal{X}) where X = StaticReal{X}
 
 Base.Float64(x::StaticReal) = known(x)
 
-Base.promote_rule(::Type{<:StaticReal}, ::Type{T}) where {T<:Number} = T
+Base.promote_rule(::Type{<:StaticReal}, ::Type{T}) where {T<:Number} = float(T)
 
 Base.convert(::Type{StaticReal{X}}, ::StaticReal{X}) where X = StaticReal{X}()
 Base.convert(T::Type{StaticReal{X}}, y::StaticReal{Y}) where {X,Y} = throw(InexactError(Symbol(T), T, y))
@@ -46,13 +49,9 @@ Base.convert(::Type{T}, ::StaticReal{X}) where {X,T<:Static.StaticNumber{X}} = T
 (::Type{T})(::StaticReal{X}) where {T<:Real,X} = T(X)
 
 
-_sr_zero(::Val{true}, x) = x
-_sr_zero(::Val{false}, x) = staticreal(zero(known(x)))
-Base.zero(x::StaticReal{X}) where X = _sr_zero(Val(iszero(X)), x)
+Base.zero(::StaticReal) = StaticReal{0.0}()
 
-_sr_one(::Val{true}, x) = x
-_sr_one(::Val{false}, x) = staticreal(one(known(x)))
-Base.one(x::StaticReal{X}) where X = _sr_one(Val(isone(X)), x)
+Base.one(::StaticReal) = StaticReal{1.0}()
 
 
 @inline Base.iszero(::StaticRealZero) = true
@@ -60,27 +59,35 @@ Base.one(x::StaticReal{X}) where X = _sr_one(Val(isone(X)), x)
 @inline Base.isone(::StaticRealOne) = true
 @inline Base.isone(@nospecialize x::StaticReal) = false
 
-
-Base.:(*)(::Union{AbstractFloat, AbstractIrrational, Integer, Rational}, y::StaticRealZero) = y
-Base.:(*)(x::StaticRealZero, ::Union{AbstractFloat, AbstractIrrational, Integer, Rational}) = x
-Base.:(*)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X * Y)
-Base.:(/)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X / Y)
-Base.:(-)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X - Y)
-Base.:(+)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X + Y)
+const RealSubType = Union{AbstractFloat, AbstractIrrational, Integer, Rational}
 
 @inline Base.:(+)(x::StaticReal) = x
 @inline Base.:(-)(::StaticReal{X}) where X = staticreal(-X)
 
+Base.:(+)(x::RealSubType, ::StaticRealZero) = x
+Base.:(+)(::StaticRealZero, y::RealSubType) = y
+Base.:(+)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X + Y)
+
+Base.:(-)(x::RealSubType, ::StaticRealZero) = x
+Base.:(-)(::StaticRealZero, y::RealSubType) = -y
+Base.:(-)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X - Y)
+
+Base.:(*)(x::RealSubType, ::StaticRealOne) = x
+Base.:(*)(::StaticRealOne, y::RealSubType) = y
+Base.:(*)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X * Y)
+
+Base.:(/)(::StaticReal{X}, ::StaticReal{Y}) where {X,Y} = staticreal(X / Y)
+
 @inline Base.:(^)(x::Real, ::StaticRealZero) = staticreal(sign(x))
 @inline Base.:(^)(x::Real, ::StaticRealOne) = x
 
-Base.exp(::StaticReal{M}) where {M} = StaticReal{exp(M)}()
-Base.exp2(::StaticReal{M}) where {M} = StaticReal{exp2(M)}()
-Base.exp10(::StaticReal{M}) where {M} = StaticReal{exp10(M)}()
-Base.expm1(::StaticReal{M}) where {M} = StaticReal{expm1(M)}()
-Base.log(::StaticReal{M}) where {M} = StaticReal{log(M)}()
-Base.log2(::StaticReal{M}) where {M} = StaticReal{log2(M)}()
-Base.log10(::StaticReal{M}) where {M} = StaticReal{log10(M)}()
-Base.log1p(::StaticReal{M}) where {M} = StaticReal{log1p(M)}()
+Base.exp(::StaticReal{M}) where {M} = StaticReal{exp(Float64(M))}()
+Base.exp2(::StaticReal{M}) where {M} = StaticReal{exp2(Float64(M))}()
+Base.exp10(::StaticReal{M}) where {M} = StaticReal{exp10(Float64(M))}()
+Base.expm1(::StaticReal{M}) where {M} = StaticReal{expm1(Float64(M))}()
+Base.log(::StaticReal{M}) where {M} = StaticReal{log(Float64(M))}()
+Base.log2(::StaticReal{M}) where {M} = StaticReal{log2(Float64(M))}()
+Base.log10(::StaticReal{M}) where {M} = StaticReal{log10(Float64(M))}()
+Base.log1p(::StaticReal{M}) where {M} = StaticReal{log1p(Float64(M))}()
 
 end # module

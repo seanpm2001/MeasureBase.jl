@@ -18,7 +18,7 @@ end
 
 basemeasure(d::Dirac) = CountingBase()
 
-massof(::Dirac) = static(1.0)
+massof(::Dirac) = staticreal(1.0)
 
 logdensity_def(μ::Dirac, x) = 0.0
 

@@ -24,7 +24,7 @@ logdensity_def(::CountingBase, ::LebesgueBase, x) = Inf
     @boundscheck throw(ArgumentError("Invalid variate type for measure"))
 end
 
-massof(::LebesgueBase) = static(Inf)
+massof(::LebesgueBase) = staticreal(Inf)
 
 function _massof(m, s::Interval, ::LebesgueBase)
     mass = massof(m)

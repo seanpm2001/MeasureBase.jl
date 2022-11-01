@@ -8,7 +8,7 @@ struct SpikeMixture{M,W,S} <: AbstractMeasure
     s::S   # spike weight
 end
 
-SpikeMixture(μ, w) = SpikeMixture(μ, w, static(1.0) - w)
+SpikeMixture(μ, w) = SpikeMixture(μ, w, staticreal(1.0) - w)
 
 function Pretty.tile(μ::SpikeMixture)
     Pretty.list_layout(Pretty.tile.([μ.m, μ.w]), prefix = "SpikeMixture")
@@ -18,7 +18,7 @@ end
 @inline function basemeasure(μ::SpikeMixture)
     # Compare formula (1.4) in Joris Bierkens, Sebastiano Grazzi, Frank van der Meulen, Moritz Schauer:
     # Sticky PDMP samplers for sparse and local inference problems. 2020. [https://arxiv.org/abs/2103.08478].
-    SpikeMixture(basemeasure(μ.m), static(1.0), static(1.0))
+    SpikeMixture(basemeasure(μ.m), staticreal(1.0), staticreal(1.0))
 end
 
 @inline function logdensity_def(μ::SpikeMixture, x)

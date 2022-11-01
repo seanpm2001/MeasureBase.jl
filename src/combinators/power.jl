@@ -89,7 +89,7 @@ end
     d::PowerMeasure{M,NTuple{N,StaticOneTo{0}}},
     x,
 ) where {M,N}
-    static(0.0)
+    staticreal(0.0)
 end
 
 @inline function insupport(μ::PowerMeasure, x)
@@ -131,12 +131,12 @@ end
 
 massof(m::PowerMeasure) = massof(m.parent)^prod(m.axes)
 
-logdensity_def(::PowerMeasure{P}, x) where {P<:PrimitiveMeasure} = static(0.0)
+logdensity_def(::PowerMeasure{P}, x) where {P<:PrimitiveMeasure} = staticreal(0.0)
 
 # To avoid ambiguities
 function logdensity_def(
     ::PowerMeasure{P,Tuple{Vararg{StaticOneTo{0},N}}},
     x,
 ) where {P<:PrimitiveMeasure,N}
-    static(0.0)
+    staticreal(0.0)
 end

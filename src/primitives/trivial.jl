@@ -6,4 +6,4 @@ gentype(::TrivialMeasure) = Nothing
 
 insupport(::TrivialMeasure, x) = False
 
-massof(::TrivialMeasure) = static(0.0)
+massof(::TrivialMeasure) = staticreal(0.0)
