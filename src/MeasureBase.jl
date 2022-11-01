@@ -70,7 +70,7 @@ abstract type AbstractMeasure end
 
 AbstractMeasure(m::AbstractMeasure) = m
 
-using Static: @constprop
+using Compat: @constprop
 
 function Pretty.quoteof(d::M) where {M<:AbstractMeasure}
     the_names = fieldnames(typeof(d))
@@ -120,7 +120,11 @@ using Compat
 
 using IrrationalConstants
 
-include("static.jl")
+include("static_extensions.jl")
+include("static_real.jl")
+
+using .StaticReals: staticreal
+
 include("smf.jl")
 include("getdof.jl")
 include("transport.jl")

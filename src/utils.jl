@@ -158,7 +158,7 @@ insupport(m::AbstractMeasure) = Base.Fix1(insupport, m)
 @inline return_type(f, args::Tuple) = Core.Compiler.return_type(f, Tuple{typeof.(args)...})
 
 unstatic(::Type{T}) where {T} = T
-unstatic(::Type{StaticFloat64{X}}) where {X} = Float64
+unstatic(::Type{<:Static.StaticNumber{X}}) where {X} = typeof(X)
 
 using InverseFunctions: FunctionWithInverse
 

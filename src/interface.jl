@@ -8,6 +8,8 @@ using MeasureBase: basemeasure_depth, proxy, istrue
 using MeasureBase: insupport, basemeasure_sequence, commonbase
 using MeasureBase: transport_to, NoTransport
 
+using MeasureBase: RealLike
+
 using DensityInterface: logdensityof
 using InverseFunctions: inverse
 using ChangesOfVariables: with_logabsdet_jacobian
@@ -71,15 +73,15 @@ function test_interface(μ::M) where {M}
 
             @test ℓμ ≈ logdensity_def(μ, x) + ℓβ
 
-            @test logdensity_def(μ, testvalue(Float64, μ)) isa Real
+            @test logdensity_def(μ, testvalue(Float64, μ)) isa RealLike
         end
     end
 end
 
 function test_transport(ν, μ)
     supertype(x) = Any
-    supertype(x::Real) = Real
-    supertype(x::AbstractArray{<:Real,N}) where {N} = AbstractArray{<:Real,N}
+    supertype(x::RealLike) = RealLike
+    supertype(x::AbstractArray{<:RealLike,N}) where {N} = AbstractArray{<:RealLike,N}
 
     structisapprox(a, b) = isapprox(a, b)
     function structisapprox(a::NTuple{N,Any}, b::NTuple{N,Any}) where {N}

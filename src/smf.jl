@@ -15,7 +15,7 @@ following properties:
 Note that unlike the CDF, an SMF is only determined up to addition by a
 constant. For many applications, this leads to a need to evaluate an SMF at -∞.
 It's therefore important that `smf(μ, -Inf)` be fast. In practice, this will
-usually be called as `smf(μ, static(-Inf))`. It's then easy to ensure speed and
+usually be called as `smf(μ, staticreal(-Inf))`. It's then easy to ensure speed and
 avoid complex control flow by adding a method `smf(μ::M, ::StaticFloat64{-Inf})`.
 
 Users who pronounce `sinh` as "sinch" are advised to pronounce `smf` as "smurf".

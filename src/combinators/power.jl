@@ -52,7 +52,7 @@ function Base.:^(μ::AbstractMeasure, dims::Tuple{Vararg{<:AbstractArray,N}}) wh
     powermeasure(μ, dims)
 end
 
-Base.:^(μ::AbstractMeasure, dims::Tuple) = powermeasure(μ, Base.OneTo.(dims))
+Base.:^(μ::AbstractMeasure, dims::Tuple) = powermeasure(μ, oneto_range.(dims))
 Base.:^(μ::AbstractMeasure, n) = powermeasure(μ, (n,))
 
 # Base.show(io::IO, d::PowerMeasure) = print(io, d.parent, " ^ ", size(d.xs))
@@ -76,7 +76,7 @@ end
 end
 
 @inline function logdensity_def(
-    d::PowerMeasure{M,Tuple{Base.OneTo{StaticInt{N}}}},
+    d::PowerMeasure{M,Tuple{StaticOneTo{N}}},
     x,
 ) where {M,N}
     parent = d.parent
@@ -86,7 +86,7 @@ end
 end
 
 @inline function logdensity_def(
-    d::PowerMeasure{M,NTuple{N,Base.OneTo{StaticInt{0}}}},
+    d::PowerMeasure{M,NTuple{N,StaticOneTo{0}}},
     x,
 ) where {M,N}
     static(0.0)
@@ -110,7 +110,7 @@ end
 
 @inline getdof(μ::PowerMeasure) = getdof(μ.parent) * prod(map(length, μ.axes))
 
-@inline function getdof(::PowerMeasure{<:Any,NTuple{N,Base.OneTo{StaticInt{0}}}}) where {N}
+@inline function getdof(::PowerMeasure{<:Any,NTuple{N,StaticOneTo{0}}}) where {N}
     static(0)
 end
 
@@ -135,7 +135,7 @@ logdensity_def(::PowerMeasure{P}, x) where {P<:PrimitiveMeasure} = static(0.0)
 
 # To avoid ambiguities
 function logdensity_def(
-    ::PowerMeasure{P,Tuple{Vararg{Base.OneTo{Static.StaticInt{0}},N}}},
+    ::PowerMeasure{P,Tuple{Vararg{StaticOneTo{0},N}}},
     x,
 ) where {P<:PrimitiveMeasure,N}
     static(0.0)

@@ -17,16 +17,16 @@ function transport_def(ν::PowerMeasure{<:StdMeasure}, μ::StdMeasure, x)
 end
 
 function transport_def(
-    ν::PowerMeasure{<:StdMeasure,<:NTuple{1,Base.OneTo}},
-    μ::PowerMeasure{<:StdMeasure,<:NTuple{1,Base.OneTo}},
+    ν::PowerMeasure{<:StdMeasure,<:NTuple{1,OneToLike}},
+    μ::PowerMeasure{<:StdMeasure,<:NTuple{1,OneToLike}},
     x,
 )
     return transport_to(ν.parent, μ.parent).(x)
 end
 
 function transport_def(
-    ν::PowerMeasure{<:StdMeasure,<:NTuple{N,Base.OneTo}},
-    μ::PowerMeasure{<:StdMeasure,<:NTuple{M,Base.OneTo}},
+    ν::PowerMeasure{<:StdMeasure,<:NTuple{N,OneToLike}},
+    μ::PowerMeasure{<:StdMeasure,<:NTuple{M,OneToLike}},
     x,
 ) where {N,M}
     return reshape(transport_to(ν.parent, μ.parent).(x), map(length, ν.axes)...)
@@ -99,7 +99,7 @@ end
 function _tuple_transport_def(
     νs::Tuple,
     μ::PowerMeasure{MU},
-    x::AbstractArray{<:Real},
+    x::AbstractArray{<:RealLike},
 ) where {MU<:StdMeasure}
     vrs = _stdvar_viewranges(νs, firstindex(x))
     xs = map(r -> view(x, r), vrs)

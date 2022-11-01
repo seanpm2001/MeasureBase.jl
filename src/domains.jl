@@ -7,8 +7,8 @@ struct RealNumbers <: RealDomain end
 
 const ℝ = RealNumbers()
 
-Base.minimum(::RealNumbers) = static(-Inf)
-Base.maximum(::RealNumbers) = static(Inf)
+Base.minimum(::RealNumbers) = staticreal(-Inf)
+Base.maximum(::RealNumbers) = staticreal(Inf)
 
 Base.in(x, ::RealNumbers) = isreal(x)
 
@@ -23,8 +23,8 @@ Base.in(x, b::BoundedReals) = b.lower ≤ x ≤ b.upper
 
 export ℝ, ℝ₊, 𝕀, ℤ
 
-const ℝ₊ = BoundedReals(static(0.0), static(Inf))
-const 𝕀 = BoundedReals(static(0.0), static(1.0))
+const ℝ₊ = BoundedReals(staticreal(0.0), staticreal(Inf))
+const 𝕀 = BoundedReals(staticreal(0.0), staticreal(1.0))
 
 Base.minimum(b::BoundedReals) = b.lower
 Base.maximum(b::BoundedReals) = b.upper
@@ -46,8 +46,8 @@ const ℤ = IntegerNumbers()
 
 Base.show(io::IO, ::typeof(ℤ)) = print(io, "ℤ")
 
-Base.minimum(::IntegerNumbers) = static(-Inf)
-Base.maximum(::IntegerNumbers) = static(Inf)
+Base.minimum(::IntegerNumbers) = staticreal(-Inf)
+Base.maximum(::IntegerNumbers) = staticreal(Inf)
 struct BoundedInts{L,U} <: IntegerDomain
     lower::L
     upper::U

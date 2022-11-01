@@ -72,7 +72,7 @@ struct NormalizedMeasure{P,M} <: AbstractMeasure
     parent_mass::M
 end
 
-massof(m::NormalizedMeasure) = static(1.0)
+massof(m::NormalizedMeasure) = staticreal(1.0)
 
 normalize(m::AbstractMeasure) = _normalize(m, massof(m))
 
