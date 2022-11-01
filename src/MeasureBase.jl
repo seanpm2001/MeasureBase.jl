@@ -120,6 +120,7 @@ using Compat
 
 using IrrationalConstants
 
+include("static.jl")
 include("smf.jl")
 include("getdof.jl")
 include("transport.jl")
